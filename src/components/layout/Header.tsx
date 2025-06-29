@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
+import { Link } from 'react-router-dom'
 import { 
   BanknotesIcon, 
   UserIcon,
@@ -44,20 +45,20 @@ export default function Header() {
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <div className="flex items-center">
-            <div className="flex-shrink-0 flex items-center">
+            <Link to="/" className="flex-shrink-0 flex items-center">
               <div className="w-10 h-10 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center mr-3">
                 <BanknotesIcon className="h-6 w-6 text-white" />
               </div>
               <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
                 FinAid Budget
               </h1>
-            </div>
+            </Link>
           </div>
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex space-x-8">
-            <a href="#" className="text-gray-700 hover:text-blue-600 font-medium transition-colors">Home</a>
-            <a href="#" className="text-gray-700 hover:text-blue-600 font-medium transition-colors">People</a>
+            <Link to="/" className="text-gray-700 hover:text-blue-600 font-medium transition-colors">Home</Link>
+            <Link to="/people" className="text-gray-700 hover:text-blue-600 font-medium transition-colors">People</Link>
             <a href="#" className="text-gray-700 hover:text-blue-600 font-medium transition-colors">Accounts</a>
             <a href="#" className="text-gray-700 hover:text-blue-600 font-medium transition-colors">Expenses</a>
             <a href="#" className="text-gray-700 hover:text-blue-600 font-medium transition-colors">Incomes</a>
@@ -200,8 +201,8 @@ export default function Header() {
         {isMenuOpen && (
           <div className="md:hidden py-4 border-t border-gray-200">
             <div className="flex flex-col space-y-2">
-              <a href="#" className="text-gray-700 hover:text-blue-600 font-medium py-2">Home</a>
-              <a href="#" className="text-gray-700 hover:text-blue-600 font-medium py-2">People</a>
+              <Link to="/" className="text-gray-700 hover:text-blue-600 font-medium py-2">Home</Link>
+              <Link to="/people" className="text-gray-700 hover:text-blue-600 font-medium py-2">People</Link>
               <a href="#" className="text-gray-700 hover:text-blue-600 font-medium py-2">Accounts</a>
               <a href="#" className="text-gray-700 hover:text-blue-600 font-medium py-2">Expenses</a>
               <a href="#" className="text-gray-700 hover:text-blue-600 font-medium py-2">Incomes</a>
