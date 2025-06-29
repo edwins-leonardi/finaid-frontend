@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { Link } from 'react-router-dom'
 import { UserIcon, EnvelopeIcon, CalendarIcon } from '@heroicons/react/24/outline'
 import { Person } from '../types/person'
 import { apiService } from '../services/api'
@@ -91,9 +92,12 @@ export default function ListPeople() {
                 <p className="text-2xl font-bold text-gray-900">{people.length}</p>
               </div>
             </div>
-            <button className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+            <Link 
+              to="/people/add"
+              className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors inline-block"
+            >
               Add Person
-            </button>
+            </Link>
           </div>
         </div>
 
@@ -103,9 +107,12 @@ export default function ListPeople() {
             <UserIcon className="h-12 w-12 text-gray-400 mx-auto mb-4" />
             <h3 className="text-lg font-medium text-gray-900 mb-2">No people found</h3>
             <p className="text-gray-600 mb-6">Get started by adding your first person to the system.</p>
-            <button className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+            <Link 
+              to="/people/add"
+              className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors inline-block"
+            >
               Add Person
-            </button>
+            </Link>
           </div>
         ) : (
           <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
