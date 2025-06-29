@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { UserIcon, EnvelopeIcon, CalendarIcon } from '@heroicons/react/24/outline'
 import { Person } from '../types/person'
 import { apiService } from '../services/api'
+import ConfirmModal from '../components/ConfirmModal'
 
 export default function ListPeople() {
   const [people, setPeople] = useState<Person[]>([])
@@ -10,6 +11,14 @@ export default function ListPeople() {
   const [error, setError] = useState<string | null>(null)
   const [skip, setSkip] = useState(0)
   const [limit, setLimit] = useState(10)
+  const [deletingId, setDeletingId] = useState<number | null>(null)
+  const [deleteModal, setDeleteModal] = useState<{
+    isOpen: boolean
+    person: Person | null
+  }>({
+    isOpen: false,
+    person: null
+  })
 
   const fetchPeople = async () => {
     try {
@@ -44,6 +53,36 @@ export default function ListPeople() {
 
   const handleNext = () => {
     setSkip(skip + limit)
+  }
+
+  const handleDeleteClick = (person: Person) => {
+    setDeleteModal({
+      isOpen: true,
+      person: person
+    })
+  }
+
+  const handleDeleteConfirm = async () => {
+    if (!deleteModal.person) return
+
+    try {
+      setDeletingId(deleteModal.person.id)
+      await apiService.deletePerson(deleteModal.person.id)
+      
+      // Close modal and refresh the list
+      setDeleteModal({ isOpen: false, person: null })
+      await fetchPeople()
+    } catch (error) {
+      // Keep modal open and show error
+      console.error('Delete error:', error)
+    } finally {
+      setDeletingId(null)
+    }
+  }
+
+  const handleDeleteCancel = () => {
+    if (deletingId) return // Prevent closing during deletion
+    setDeleteModal({ isOpen: false, person: null })
   }
 
   if (loading) {
@@ -172,11 +211,18 @@ export default function ListPeople() {
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                        <button className="text-blue-600 hover:text-blue-900 mr-4">
+                        <Link 
+                          to={`/people/edit/${person.id}`}
+                          className="text-blue-600 hover:text-blue-900 mr-4"
+                        >
                           Edit
-                        </button>
-                        <button className="text-red-600 hover:text-red-900">
-                          Delete
+                        </Link>
+                        <button 
+                          onClick={() => handleDeleteClick(person)}
+                          disabled={deletingId === person.id}
+                          className="text-red-600 hover:text-red-900 disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                          {deletingId === person.id ? 'Deleting...' : 'Delete'}
                         </button>
                       </td>
                     </tr>
@@ -232,6 +278,19 @@ export default function ListPeople() {
             </div>
           </div>
         )}
+
+        {/* Delete Confirmation Modal */}
+        <ConfirmModal
+          isOpen={deleteModal.isOpen}
+          onClose={handleDeleteCancel}
+          onConfirm={handleDeleteConfirm}
+          title="Delete Person"
+          message={`Are you sure you want to delete "${deleteModal.person?.name}"? This action cannot be undone and will permanently remove this person from the system.`}
+          confirmText="Delete Person"
+          cancelText="Cancel"
+          isLoading={deletingId !== null}
+          type="danger"
+        />
       </div>
     </div>
   )

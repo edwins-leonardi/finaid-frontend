@@ -40,12 +40,31 @@ class ApiService {
     return response.data
   }
 
+  async getPersonById(id: number): Promise<Person> {
+    const response = await this.request<{ data: Person }>(`/persons/${id}`)
+    return response.data
+  }
+
   async createPerson(person: { name: string; email: string }): Promise<Person> {
     const response = await this.request<{ data: Person }>('/persons', {
       method: 'POST',
       body: JSON.stringify(person),
     })
     return response.data
+  }
+
+  async updatePerson(id: number, person: { name: string; email: string }): Promise<Person> {
+    const response = await this.request<{ data: Person }>(`/persons/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(person),
+    })
+    return response.data
+  }
+
+  async deletePerson(id: number): Promise<void> {
+    await this.request(`/persons/${id}`, {
+      method: 'DELETE',
+    })
   }
 }
 

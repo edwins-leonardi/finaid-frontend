@@ -12,6 +12,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/people" element={<ListPeople />} />
           <Route path="/people/add" element={<EditPeople />} />
+          <Route path="/people/edit/:id" element={<EditPeople />} />
         </Routes>
       </Layout>
     </Router>

@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useState, useEffect } from 'react'
+import { useNavigate, useParams } from 'react-router-dom'
 import { UserIcon, EnvelopeIcon, ExclamationCircleIcon } from '@heroicons/react/24/outline'
 import { apiService } from '../services/api'
 
@@ -16,12 +16,39 @@ interface FormErrors {
 
 export default function EditPeople() {
   const navigate = useNavigate()
+  const { id } = useParams<{ id?: string }>()
+  const isEditing = Boolean(id)
+  
   const [formData, setFormData] = useState<FormData>({
     name: '',
     email: ''
   })
   const [errors, setErrors] = useState<FormErrors>({})
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isLoading, setIsLoading] = useState(isEditing)
+
+  // Load person data for editing
+  useEffect(() => {
+    if (isEditing && id) {
+      const loadPerson = async () => {
+        try {
+          setIsLoading(true)
+          const person = await apiService.getPersonById(parseInt(id))
+          setFormData({
+            name: person.name,
+            email: person.email
+          })
+        } catch (error) {
+          setErrors({
+            submit: error instanceof Error ? error.message : 'Failed to load person data'
+          })
+        } finally {
+          setIsLoading(false)
+        }
+      }
+      loadPerson()
+    }
+  }, [isEditing, id])
 
   const validateEmail = (email: string): boolean => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
@@ -77,16 +104,23 @@ export default function EditPeople() {
     setErrors({})
 
     try {
-      await apiService.createPerson({
-        name: formData.name.trim(),
-        email: formData.email.trim()
-      })
+      if (isEditing && id) {
+        await apiService.updatePerson(parseInt(id), {
+          name: formData.name.trim(),
+          email: formData.email.trim()
+        })
+      } else {
+        await apiService.createPerson({
+          name: formData.name.trim(),
+          email: formData.email.trim()
+        })
+      }
 
       // Success - navigate back to people list
       navigate('/people')
     } catch (error) {
       setErrors({
-        submit: error instanceof Error ? error.message : 'Failed to create person. Please try again.'
+        submit: error instanceof Error ? error.message : `Failed to ${isEditing ? 'update' : 'create'} person. Please try again.`
       })
     } finally {
       setIsSubmitting(false)
@@ -97,13 +131,25 @@ export default function EditPeople() {
     navigate('/people')
   }
 
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      </div>
+    )
+  }
+
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Add New Person</h1>
-          <p className="text-gray-600">Create a new person in the system</p>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">
+            {isEditing ? 'Edit Person' : 'Add New Person'}
+          </h1>
+          <p className="text-gray-600">
+            {isEditing ? 'Update person information' : 'Create a new person in the system'}
+          </p>
         </div>
 
         {/* Form */}
@@ -198,7 +244,7 @@ export default function EditPeople() {
                     Saving...
                   </>
                 ) : (
-                  'Save Person'
+                  isEditing ? 'Update Person' : 'Save Person'
                 )}
               </button>
             </div>
