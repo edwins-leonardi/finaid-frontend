@@ -69,18 +69,21 @@ function App() {
             {/* Desktop Navigation */}
             <nav className="hidden md:flex space-x-8">
               <a href="#" className="text-gray-700 hover:text-blue-600 font-medium transition-colors">Home</a>
-              <a href="#" className="text-gray-700 hover:text-blue-600 font-medium transition-colors">Budget</a>
-              <a href="#" className="text-gray-700 hover:text-blue-600 font-medium transition-colors">Applications</a>
+              <a href="#" className="text-gray-700 hover:text-blue-600 font-medium transition-colors">People</a>
+              <a href="#" className="text-gray-700 hover:text-blue-600 font-medium transition-colors">Accounts</a>
+              <a href="#" className="text-gray-700 hover:text-blue-600 font-medium transition-colors">Expenses</a>
+              <a href="#" className="text-gray-700 hover:text-blue-600 font-medium transition-colors">Incomes</a>
+              <a href="#" className="text-gray-700 hover:text-blue-600 font-medium transition-colors">Transfers</a>
               <a href="#" className="text-gray-700 hover:text-blue-600 font-medium transition-colors">Reports</a>
-              <a href="#" className="text-gray-700 hover:text-blue-600 font-medium transition-colors">Settings</a>
             </nav>
 
-            {/* CTA Button */}
+            {/* CTA Button
             <div className="hidden md:flex items-center space-x-4">
               <button className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-2 rounded-lg font-semibold hover:from-blue-700 hover:to-purple-700 transition-all duration-200 shadow-lg">
                 Get Started
               </button>
             </div>
+            
 
             {/* Mobile menu button */}
             <div className="md:hidden">
@@ -100,13 +103,15 @@ function App() {
             <div className="md:hidden py-4 border-t border-gray-200">
               <div className="flex flex-col space-y-2">
                 <a href="#" className="text-gray-700 hover:text-blue-600 font-medium py-2">Home</a>
-                <a href="#" className="text-gray-700 hover:text-blue-600 font-medium py-2">Budget</a>
-                <a href="#" className="text-gray-700 hover:text-blue-600 font-medium py-2">Applications</a>
+                <a href="#" className="text-gray-700 hover:text-blue-600 font-medium py-2">People</a>
+                <a href="#" className="text-gray-700 hover:text-blue-600 font-medium py-2">Accounts</a>
+                <a href="#" className="text-gray-700 hover:text-blue-600 font-medium py-2">Expenses</a>
+                <a href="#" className="text-gray-700 hover:text-blue-600 font-medium py-2">Incomes</a>
+                <a href="#" className="text-gray-700 hover:text-blue-600 font-medium py-2">Transfers</a>
                 <a href="#" className="text-gray-700 hover:text-blue-600 font-medium py-2">Reports</a>
-                <a href="#" className="text-gray-700 hover:text-blue-600 font-medium py-2">Settings</a>
-                <button className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-2 rounded-lg font-semibold mt-4 w-full">
+                {/* <button className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-2 rounded-lg font-semibold mt-4 w-full">
                   Get Started
-                </button>
+                </button> */}
               </div>
             </div>
           )}
