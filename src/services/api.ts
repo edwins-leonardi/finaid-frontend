@@ -1,4 +1,5 @@
 import { Person, ListPersonsRequest } from '../types/person'
+import { Account, ListAccountsRequest, CreateAccountRequest } from '../types/account'
 
 const API_BASE_URL = 'http://localhost:8080/api/v1'
 
@@ -63,6 +64,51 @@ class ApiService {
 
   async deletePerson(id: number): Promise<void> {
     await this.request(`/persons/${id}`, {
+      method: 'DELETE',
+    })
+  }
+
+  // Account methods
+  async listAccounts(params: ListAccountsRequest = {}): Promise<Account[]> {
+    const searchParams = new URLSearchParams()
+    
+    if (params.skip !== undefined) {
+      searchParams.append('skip', params.skip.toString())
+    }
+    if (params.limit !== undefined) {
+      searchParams.append('limit', params.limit.toString())
+    }
+
+    const queryString = searchParams.toString()
+    const endpoint = `/accounts${queryString ? `?${queryString}` : ''}`
+    
+    const response = await this.request<{ data: Account[] }>(endpoint)
+    return response.data
+  }
+
+  async getAccountById(id: number): Promise<Account> {
+    const response = await this.request<{ data: Account }>(`/accounts/${id}`)
+    return response.data
+  }
+
+  async createAccount(account: CreateAccountRequest): Promise<Account> {
+    const response = await this.request<{ data: Account }>('/accounts', {
+      method: 'POST',
+      body: JSON.stringify(account),
+    })
+    return response.data
+  }
+
+  async updateAccount(id: number, account: CreateAccountRequest): Promise<Account> {
+    const response = await this.request<{ data: Account }>(`/accounts/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(account),
+    })
+    return response.data
+  }
+
+  async deleteAccount(id: number): Promise<void> {
+    await this.request(`/accounts/${id}`, {
       method: 'DELETE',
     })
   }

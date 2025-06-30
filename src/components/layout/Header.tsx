@@ -59,7 +59,7 @@ export default function Header() {
           <nav className="hidden md:flex space-x-8">
             <Link to="/" className="text-gray-700 hover:text-blue-600 font-medium transition-colors">Home</Link>
             <Link to="/people" className="text-gray-700 hover:text-blue-600 font-medium transition-colors">People</Link>
-            <a href="#" className="text-gray-700 hover:text-blue-600 font-medium transition-colors">Accounts</a>
+            <Link to="/accounts" className="text-gray-700 hover:text-blue-600 font-medium transition-colors">Accounts</Link>
             <a href="#" className="text-gray-700 hover:text-blue-600 font-medium transition-colors">Expenses</a>
             <a href="#" className="text-gray-700 hover:text-blue-600 font-medium transition-colors">Incomes</a>
             <a href="#" className="text-gray-700 hover:text-blue-600 font-medium transition-colors">Transfers</a>
@@ -203,7 +203,7 @@ export default function Header() {
             <div className="flex flex-col space-y-2">
               <Link to="/" className="text-gray-700 hover:text-blue-600 font-medium py-2">Home</Link>
               <Link to="/people" className="text-gray-700 hover:text-blue-600 font-medium py-2">People</Link>
-              <a href="#" className="text-gray-700 hover:text-blue-600 font-medium py-2">Accounts</a>
+              <Link to="/accounts" className="text-gray-700 hover:text-blue-600 font-medium py-2">Accounts</Link>
               <a href="#" className="text-gray-700 hover:text-blue-600 font-medium py-2">Expenses</a>
               <a href="#" className="text-gray-700 hover:text-blue-600 font-medium py-2">Incomes</a>
               <a href="#" className="text-gray-700 hover:text-blue-600 font-medium py-2">Transfers</a>
