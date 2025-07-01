@@ -1,5 +1,12 @@
 import { Person, ListPersonsRequest } from '../types/person'
 import { Account, ListAccountsRequest, CreateAccountRequest } from '../types/account'
+import { 
+  Expense, 
+  ExpenseCategory, 
+  ExpenseSubCategory, 
+  ListExpensesParams, 
+  CreateExpenseRequest 
+} from '../types/expense'
 
 const API_BASE_URL = 'http://localhost:8080/api/v1'
 
@@ -111,6 +118,96 @@ class ApiService {
     await this.request(`/accounts/${id}`, {
       method: 'DELETE',
     })
+  }
+
+  // Expense methods
+  async listExpenses(params: ListExpensesParams = {}): Promise<Expense[]> {
+    const searchParams = new URLSearchParams()
+    
+    if (params.skip !== undefined) {
+      searchParams.append('skip', params.skip.toString())
+    }
+    if (params.limit !== undefined) {
+      searchParams.append('limit', params.limit.toString())
+    }
+    if (params.category_id !== undefined) {
+      searchParams.append('category_id', params.category_id.toString())
+    }
+    if (params.subcategory_id !== undefined) {
+      searchParams.append('subcategory_id', params.subcategory_id.toString())
+    }
+    if (params.payee_id !== undefined) {
+      searchParams.append('payee_id', params.payee_id.toString())
+    }
+    if (params.start_date) {
+      searchParams.append('start_date', params.start_date)
+    }
+    if (params.end_date) {
+      searchParams.append('end_date', params.end_date)
+    }
+
+    const queryString = searchParams.toString()
+    const endpoint = `/expenses${queryString ? `?${queryString}` : ''}`
+    
+    const response = await this.request<{ data: Expense[] }>(endpoint)
+    return response.data
+  }
+
+  async getExpenseById(id: number): Promise<Expense> {
+    const response = await this.request<{ data: Expense }>(`/expenses/${id}`)
+    return response.data
+  }
+
+  async createExpense(expense: CreateExpenseRequest): Promise<Expense> {
+    const response = await this.request<{ data: Expense }>('/expenses', {
+      method: 'POST',
+      body: JSON.stringify(expense),
+    })
+    return response.data
+  }
+
+  async updateExpense(id: number, expense: CreateExpenseRequest): Promise<Expense> {
+    const response = await this.request<{ data: Expense }>(`/expenses/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(expense),
+    })
+    return response.data
+  }
+
+  async deleteExpense(id: number): Promise<void> {
+    await this.request(`/expenses/${id}`, {
+      method: 'DELETE',
+    })
+  }
+
+  // Expense Category methods
+  async listExpenseCategories(): Promise<ExpenseCategory[]> {
+    const response = await this.request<{ data: ExpenseCategory[] }>('/expenses/categories')
+    return response.data
+  }
+
+  async getExpenseCategoryById(id: number): Promise<ExpenseCategory> {
+    const response = await this.request<{ data: ExpenseCategory }>(`/expenses/categories/${id}`)
+    return response.data
+  }
+
+  // Expense SubCategory methods
+  async listExpenseSubCategories(categoryId?: number): Promise<ExpenseSubCategory[]> {
+    const searchParams = new URLSearchParams()
+    if (categoryId) {
+      searchParams.append('expense_category_id', categoryId.toString())
+    }
+    
+    const queryString = searchParams.toString()
+    const endpoint = `/expenses/categories/subcategories${queryString ? `?${queryString}` : ''}`
+    
+    const response = await this.request<{ data: ExpenseSubCategory[] }>(endpoint)
+    return response.data
+  }
+
+  async getExpenseSubCategoryById(id: number): Promise<ExpenseSubCategory> {
+    const response = await this.request<{ data: ExpenseSubCategory }>(`/expenses/categories/subcategories/${id}`)
+    return response.data
   }
 }
 

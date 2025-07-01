@@ -5,6 +5,7 @@ import ListPeople from './pages/ListPeople'
 import EditPeople from './pages/EditPeople'
 import ListAccounts from './pages/ListAccounts'
 import EditAccount from './pages/EditAccount'
+import ListExpenses from './pages/ListExpenses'
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
           <Route path="/accounts" element={<ListAccounts />} />
           <Route path="/accounts/new" element={<EditAccount />} />
           <Route path="/accounts/:id/edit" element={<EditAccount />} />
+          <Route path="/expenses" element={<ListExpenses />} />
         </Routes>
       </Layout>
     </Router>
