@@ -7,7 +7,8 @@ import {
   CalendarIcon,
   CurrencyDollarIcon,
   UserIcon,
-  TagIcon
+  TagIcon,
+  BanknotesIcon
 } from '@heroicons/react/24/outline'
 import { apiService } from '../services/api'
 import { 
@@ -17,6 +18,7 @@ import {
   ListExpensesParams 
 } from '../types/expense'
 import { Person } from '../types/person'
+import { Account } from '../types/account'
 import ConfirmModal from '../components/ConfirmModal'
 
 export default function ListExpenses() {
@@ -24,6 +26,7 @@ export default function ListExpenses() {
   const [categories, setCategories] = useState<ExpenseCategory[]>([])
   const [subCategories, setSubCategories] = useState<ExpenseSubCategory[]>([])
   const [people, setPeople] = useState<Person[]>([])
+  const [accounts, setAccounts] = useState<Account[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   
@@ -35,6 +38,7 @@ export default function ListExpenses() {
   const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(null)
   const [selectedSubCategoryId, setSelectedSubCategoryId] = useState<number | null>(null)
   const [selectedPayeeId, setSelectedPayeeId] = useState<number | null>(null)
+  const [selectedAccountId, setSelectedAccountId] = useState<number | null>(null)
   
   // Delete modal state
   const [deleteModalOpen, setDeleteModalOpen] = useState(false)
@@ -76,20 +80,22 @@ export default function ListExpenses() {
   useEffect(() => {
     const loadInitialData = async () => {
       try {
-        const [categoriesData, peopleData] = await Promise.all([
+        const [categoriesData, peopleData, accountsData] = await Promise.all([
           apiService.listExpenseCategories(),
-          apiService.listPersons({ limit: 1000 }) // Get all people for filter
+          apiService.listPersons({ limit: 1000 }), // Get all people for filter
+          apiService.listAccounts({ limit: 1000 }) // Get all accounts for filter
         ])
         
         setCategories(categoriesData)
         setPeople(peopleData)
+        setAccounts(accountsData)
         
         // Load all subcategories
         const subCategoriesData = await apiService.listExpenseSubCategories()
         setSubCategories(subCategoriesData)
       } catch (err) {
         console.error('Failed to load initial data:', err)
-        setError('Failed to load categories and people')
+        setError('Failed to load categories, people, and accounts')
       }
     }
 
@@ -121,6 +127,9 @@ export default function ListExpenses() {
         if (selectedPayeeId) {
           params.payee_id = selectedPayeeId
         }
+        if (selectedAccountId) {
+          params.account_id = selectedAccountId
+        }
         
         const expensesData = await apiService.listExpenses(params)
         setExpenses(expensesData)
@@ -133,13 +142,14 @@ export default function ListExpenses() {
     }
 
     loadExpenses()
-  }, [currentDate, selectedCategoryId, selectedSubCategoryId, selectedPayeeId])
+  }, [currentDate, selectedCategoryId, selectedSubCategoryId, selectedPayeeId, selectedAccountId])
 
   // Clear filters
   const clearFilters = () => {
     setSelectedCategoryId(null)
     setSelectedSubCategoryId(null)
     setSelectedPayeeId(null)
+    setSelectedAccountId(null)
   }
 
   // Get category name by ID
@@ -155,6 +165,11 @@ export default function ListExpenses() {
   // Get person name by ID
   const getPersonName = (personId: number) => {
     return people?.find(person => person.id === personId)?.name || 'Unknown'
+  }
+
+  // Get account name by ID
+  const getAccountName = (accountId: number) => {
+    return accounts?.find(account => account.id === accountId)?.name || 'Unknown'
   }
 
   // Handle delete expense
@@ -236,7 +251,7 @@ export default function ListExpenses() {
               <span>Filters</span>
             </button>
             
-            {(selectedCategoryId || selectedSubCategoryId || selectedPayeeId) && (
+            {(selectedCategoryId || selectedSubCategoryId || selectedPayeeId || selectedAccountId) && (
               <button
                 onClick={clearFilters}
                 className="flex items-center space-x-2 px-4 py-2 text-gray-600 hover:text-gray-900 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
@@ -260,7 +275,7 @@ export default function ListExpenses() {
 
         {/* Filter Controls */}
         {showFilters && (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4 border-t border-gray-200">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 pt-4 border-t border-gray-200">
             {/* Category Filter */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -328,6 +343,28 @@ export default function ListExpenses() {
                 )) || []}
               </select>
             </div>
+
+            {/* Account Filter */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Account
+              </label>
+              <select
+                value={selectedAccountId || ''}
+                onChange={(e) => {
+                  const value = e.target.value ? parseInt(e.target.value) : null
+                  setSelectedAccountId(value)
+                }}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              >
+                <option value="">All Accounts</option>
+                {accounts?.map(account => (
+                  <option key={account.id} value={account.id}>
+                    {account.name}
+                  </option>
+                )) || []}
+              </select>
+            </div>
           </div>
         )}
       </div>
@@ -359,7 +396,7 @@ export default function ListExpenses() {
             <CurrencyDollarIcon className="mx-auto h-12 w-12 text-gray-400 mb-4" />
             <h3 className="text-lg font-medium text-gray-900 mb-2">No expenses found</h3>
             <p className="text-gray-600">
-              {(selectedCategoryId || selectedSubCategoryId || selectedPayeeId) 
+              {(selectedCategoryId || selectedSubCategoryId || selectedPayeeId || selectedAccountId) 
                 ? 'No expenses match your current filters.' 
                 : `No expenses recorded for ${formatMonthYear(currentDate)}.`
               }
@@ -384,6 +421,9 @@ export default function ListExpenses() {
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Payee
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Account
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Notes
@@ -427,6 +467,14 @@ export default function ListExpenses() {
                         <UserIcon className="h-4 w-4 text-gray-400 mr-2" />
                         <span className="text-sm text-gray-900">
                           {getPersonName(expense.payee_id)}
+                        </span>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="flex items-center">
+                        <BanknotesIcon className="h-4 w-4 text-gray-400 mr-2" />
+                        <span className="text-sm text-gray-900">
+                          {getAccountName(expense.account_id)}
                         </span>
                       </div>
                     </td>

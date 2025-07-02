@@ -5,6 +5,7 @@ export interface Expense {
   subcategory_id?: number;
   date: string; // ISO date string
   payee_id: number;
+  account_id: number;
   notes?: string;
   created_at: string;
   updated_at: string;
@@ -31,6 +32,7 @@ export interface CreateExpenseRequest {
   subcategory_id?: number;
   date: string; // YYYY-MM-DD format
   payee_id: number;
+  account_id: number;
   notes?: string;
 }
 
@@ -40,6 +42,7 @@ export interface UpdateExpenseRequest {
   subcategory_id?: number;
   date: string; // YYYY-MM-DD format
   payee_id: number;
+  account_id: number;
   notes?: string;
 }
 
@@ -49,6 +52,7 @@ export interface ListExpensesParams {
   category_id?: number;
   subcategory_id?: number;
   payee_id?: number;
+  account_id?: number;
   start_date?: string; // YYYY-MM-DD format
   end_date?: string; // YYYY-MM-DD format
 } 

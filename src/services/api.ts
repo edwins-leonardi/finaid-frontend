@@ -28,7 +28,19 @@ class ApiService {
       throw new Error(errorMessage)
     }
 
-    return response.json()
+    // Handle empty responses (like 204 No Content)
+    const contentLength = response.headers.get('content-length')
+    if (response.status === 204 || contentLength === '0') {
+      return undefined as any
+    }
+
+    // Check if response has content
+    const text = await response.text()
+    if (!text) {
+      return undefined as any
+    }
+
+    return JSON.parse(text)
   }
 
   async listPersons(params: ListPersonsRequest = {}): Promise<Person[]> {
@@ -138,6 +150,9 @@ class ApiService {
     }
     if (params.payee_id !== undefined) {
       searchParams.append('payee_id', params.payee_id.toString())
+    }
+    if (params.account_id !== undefined) {
+      searchParams.append('account_id', params.account_id.toString())
     }
     if (params.start_date) {
       searchParams.append('start_date', params.start_date)
