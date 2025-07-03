@@ -8,8 +8,11 @@ import {
   CurrencyDollarIcon,
   UserIcon,
   TagIcon,
-  BanknotesIcon
+  BanknotesIcon,
+  PlusIcon,
+  PencilIcon
 } from '@heroicons/react/24/outline'
+import { useNavigate } from 'react-router-dom'
 import { apiService } from '../services/api'
 import { 
   Expense, 
@@ -22,6 +25,7 @@ import { Account } from '../types/account'
 import ConfirmModal from '../components/ConfirmModal'
 
 export default function ListExpenses() {
+  const navigate = useNavigate()
   const [expenses, setExpenses] = useState<Expense[]>([])
   const [categories, setCategories] = useState<ExpenseCategory[]>([])
   const [subCategories, setSubCategories] = useState<ExpenseSubCategory[]>([])
@@ -207,7 +211,16 @@ export default function ListExpenses() {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">Expenses</h1>
+        <div className="flex items-center justify-between mb-2">
+          <h1 className="text-3xl font-bold text-gray-900">Expenses</h1>
+          <button
+            onClick={() => navigate('/expenses/new')}
+            className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+          >
+            <PlusIcon className="h-5 w-5" />
+            <span>Add Expense</span>
+          </button>
+        </div>
         <p className="text-gray-600">Track and manage your monthly expenses</p>
       </div>
 
@@ -485,8 +498,15 @@ export default function ListExpenses() {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                       <button
+                        onClick={() => navigate(`/expenses/${expense.id}/edit`)}
+                        className="text-blue-600 hover:text-blue-900 mr-4"
+                      >
+                        <PencilIcon className="h-4 w-4 inline mr-1" />
+                        Edit
+                      </button>
+                      <button
                         onClick={() => handleDeleteClick(expense)}
-                        className="text-red-600 hover:text-red-900 ml-4"
+                        className="text-red-600 hover:text-red-900"
                       >
                         Delete
                       </button>

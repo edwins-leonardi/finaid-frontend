@@ -6,6 +6,7 @@ import EditPeople from './pages/EditPeople'
 import ListAccounts from './pages/ListAccounts'
 import EditAccount from './pages/EditAccount'
 import ListExpenses from './pages/ListExpenses'
+import EditExpense from './pages/EditExpense'
 
 function App() {
   return (
@@ -20,6 +21,8 @@ function App() {
           <Route path="/accounts/new" element={<EditAccount />} />
           <Route path="/accounts/:id/edit" element={<EditAccount />} />
           <Route path="/expenses" element={<ListExpenses />} />
+          <Route path="/expenses/new" element={<EditExpense />} />
+          <Route path="/expenses/:id/edit" element={<EditExpense />} />
         </Routes>
       </Layout>
     </Router>
